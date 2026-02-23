@@ -125,11 +125,15 @@ with st.sidebar:
         st.error("كلمة المرور غير صحيحة")
 
 # ==========================================
+
 # الواجهة الرئيسية (للموظفين)
 # ==========================================
 
-# إضافة الشعار مباشرة
-st.image("logo.png")
+# نستخدم الأعمدة لوضع الشعار في المنتصف وبحجم مناسب
+col1, col2, col3 = st.columns([1, 1, 1])
+with col2:
+    # رابط الصورة المباشر من سيرفرات ويكيبيديا
+    st.image("https://ar.wikipedia.org/wiki/Special:FilePath/جامعة_ابن_سينا_للعلوم_الطبية_والصيدلانية.png", use_column_width=True)
 
 st.markdown("<h1 style='text-align: center;'>نظام الرواتب الإلكتروني</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center;'>جامعة ابن سينا للعلوم الطبية والصيدلانية</h3>", unsafe_allow_html=True)
@@ -169,6 +173,7 @@ if st.button("بحث واستخراج القسيمة"):
             st.error("جاري تحديث البيانات أو أن ملف البيانات غير موجود. الرجاء المحاولة بعد قليل.")
         except Exception as e:
             st.error(f"حدث خطأ: {e}")
+
 
 
 
