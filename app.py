@@ -128,14 +128,8 @@ with st.sidebar:
 # الواجهة الرئيسية (للموظفين)
 # ==========================================
 
-# إضافة الشعار في أعلى منتصف الصفحة
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    try:
-        # سيتم عرض الشعار هنا إذا كان الملف موجوداً
-        st.image("logo.png", use_column_width=True)
-    except FileNotFoundError:
-        pass # إذا لم يجد الشعار، سيكمل بدون إظهار خطأ
+# إضافة الشعار مباشرة
+st.image("logo.png")
 
 st.markdown("<h1 style='text-align: center;'>نظام الرواتب الإلكتروني</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center;'>جامعة ابن سينا للعلوم الطبية والصيدلانية</h3>", unsafe_allow_html=True)
@@ -175,6 +169,7 @@ if st.button("بحث واستخراج القسيمة"):
             st.error("جاري تحديث البيانات أو أن ملف البيانات غير موجود. الرجاء المحاولة بعد قليل.")
         except Exception as e:
             st.error(f"حدث خطأ: {e}")
+
 
 
 
