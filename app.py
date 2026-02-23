@@ -8,7 +8,15 @@ from github import Github
 
 # --- إعداد الصفحة ---
 st.set_page_config(page_title="نظام الرواتب", layout="centered")
-
+# --- إخفاء قوائم Streamlit لحماية الكود ---
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 # --- دوال مساعدة ---
 def fix_text(text):
     if pd.isna(text): return ""
@@ -156,4 +164,5 @@ if st.button("بحث واستخراج القسيمة"):
             st.error("جاري تحديث البيانات أو أن ملف البيانات غير موجود. الرجاء المحاولة بعد قليل.")
         except Exception as e:
             st.error(f"حدث خطأ: {e}")
+
 
