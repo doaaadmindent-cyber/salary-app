@@ -7,35 +7,9 @@ import pandas as pd
 st.set_page_config(page_title="نظام الرواتب", page_icon="💰", layout="wide")
 
 # ==========================================
-# 2. إخفاء حقوق المنصة وتنسيق اللغة العربية
+# 2. إخفاء حقوق المنصة
 # ==========================================
-st.markdown("""
-<style>
-footer {visibility: hidden;}
-
-/* توجيه الواجهة بالكامل من اليمين لليسار */
-.stApp {
-    direction: rtl;
-    font-family: 'Arial', sans-serif;
-}
-
-/* توجيه الجداول الأصلية لتبدأ من اليمين */
-[data-testid="stTable"] {
-    direction: rtl;
-    text-align: right;
-}
-th {
-    text-align: right !important;
-    background-color: #f1f5f9 !important;
-    color: #1e293b !important;
-    font-size: 16px !important;
-}
-td {
-    text-align: right !important;
-    font-size: 15px !important;
-}
-</style>
-""", unsafe_allow_html=True)
+st.markdown("<style>footer {visibility: hidden;}</style>", unsafe_allow_html=True)
 
 # ==========================================
 # 3. العناوين الرئيسية
@@ -80,31 +54,55 @@ if search_button:
             user_data = df[df['الاسم'].str.contains(emp_name.strip(), na=False)]
             
             if not user_data.empty:
-                # أخذ الصف الأول فقط في حال تشابه الأسماء
-                employee_row = user_data.head(1)
+                row = user_data.iloc[0]
                 
-                # ترتيب الأعمدة لتظهر في الجدول الأفقي بترتيب منطقي
-                columns_order = [
-                    'الاسم', 'المنصب', 'اللقب العلمي', 
-                    'الراتب الاسمي', 'الخدمة الجامعية', 'النقل', 'الزوجية', 'الراتب الكامل', 
-                    'التقاعد', 'الضريبة', 'الراتب الصافي بعد الاستقطاعات'
-                ]
-                
-                # فلترة الأعمدة الموجودة فعلياً في ملف الإكسل لتجنب الأخطاء
-                available_columns = [col for col in columns_order if col in employee_row.columns]
-                final_data = employee_row[available_columns]
-                
-                st.success(f"✅ تفاصيل راتب الموظف: {employee_row['الاسم'].values[0]}")
-                
-                # عرض البيانات باستخدام جدول Streamlit الأصلي (أفقي 100%)
-                st.table(final_data)
+                # ==========================================
+                # كود HTML لجدول أفقي إجباري (لا ينكسر أبداً)
+                # ==========================================
+                html_table = f"""
+                <div style="overflow-x: auto; direction: rtl; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 8px;">
+                  <table style="width: 100%; min-width: 1200px; border-collapse: collapse; text-align: center; font-family: 'Arial', sans-serif;">
+                    <thead>
+                      <tr style="background-color: #f8fafc; color: #0f172a; font-size: 16px;">
+                        <th style="border: 2px solid #cbd5e1; padding: 12px;">الاسم</th>
+                        <th style="border: 2px solid #cbd5e1; padding: 12px;">المنصب</th>
+                        <th style="border: 2px solid #cbd5e1; padding: 12px;">اللقب العلمي</th>
+                        <th style="border: 2px solid #cbd5e1; padding: 12px; background-color: #e0f2fe; color: #0369a1;">الراتب الاسمي</th>
+                        <th style="border: 2px solid #cbd5e1; padding: 12px; background-color: #e0f2fe; color: #0369a1;">الخدمة الجامعية</th>
+                        <th style="border: 2px solid #cbd5e1; padding: 12px; background-color: #e0f2fe; color: #0369a1;">النقل</th>
+                        <th style="border: 2px solid #cbd5e1; padding: 12px; background-color: #e0f2fe; color: #0369a1;">الزوجية</th>
+                        <th style="border: 2px solid #cbd5e1; padding: 12px; background-color: #bae6fd; color: #0369a1;">الراتب الكامل</th>
+                        <th style="border: 2px solid #cbd5e1; padding: 12px; background-color: #fee2e2; color: #b91c1c;">التقاعد</th>
+                        <th style="border: 2px solid #cbd5e1; padding: 12px; background-color: #fee2e2; color: #b91c1c;">الضريبة</th>
+                        <th style="border: 2px solid #cbd5e1; padding: 12px; background-color: #dcfce7; color: #15803d; font-size: 18px;">الراتب الصافي</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style="background-color: #ffffff; color: #334155; font-size: 15px; font-weight: bold;">
+                        <td style="border: 2px solid #cbd5e1; padding: 12px;">{row.get('الاسم', '-')}</td>
+                        <td style="border: 2px solid #cbd5e1; padding: 12px;">{row.get('المنصب', '-')}</td>
+                        <td style="border: 2px solid #cbd5e1; padding: 12px;">{row.get('اللقب العلمي', '-')}</td>
+                        <td style="border: 2px solid #cbd5e1; padding: 12px; background-color: #f0f9ff;">{row.get('الراتب الاسمي', '-')}</td>
+                        <td style="border: 2px solid #cbd5e1; padding: 12px; background-color: #f0f9ff;">{row.get('الخدمة الجامعية', '-')}</td>
+                        <td style="border: 2px solid #cbd5e1; padding: 12px; background-color: #f0f9ff;">{row.get('النقل', '-')}</td>
+                        <td style="border: 2px solid #cbd5e1; padding: 12px; background-color: #f0f9ff;">{row.get('الزوجية', '-')}</td>
+                        <td style="border: 2px solid #cbd5e1; padding: 12px; background-color: #e0f2fe;">{row.get('الراتب الكامل', '-')}</td>
+                        <td style="border: 2px solid #cbd5e1; padding: 12px; background-color: #fef2f2; color: #dc2626;">{row.get('التقاعد', '-')}</td>
+                        <td style="border: 2px solid #cbd5e1; padding: 12px; background-color: #fef2f2; color: #dc2626;">{row.get('الضريبة', '-')}</td>
+                        <td style="border: 2px solid #cbd5e1; padding: 12px; background-color: #f0fdf4; color: #16a34a; font-size: 18px;">{row.get('الراتب الصافي بعد الاستقطاعات', '-')}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                """
+                st.markdown(html_table, unsafe_allow_html=True)
                 
             else:
-                st.error("❌ عذراً، لم يتم العثور على اسم مطابق. يرجى التأكد من كتابة الاسم بشكل صحيح.")
+                st.error("❌ عذراً، لم يتم العثور على اسم مطابق.")
                 
         except FileNotFoundError:
             st.error("⚠️ لم يتم رفع ملف الرواتب من قبل الإدارة بعد.")
         except Exception as e:
-            st.error(f"⚠️ يوجد خطأ في قراءة بيانات الإكسل. تأكد من مطابقة أسماء الأعمدة. (التفاصيل: {e})")
+            st.error(f"⚠️ يوجد خطأ في قراءة بيانات الإكسل. (التفاصيل: {e})")
     else:
         st.warning("⚠️ الرجاء إدخال الاسم أولاً.")
