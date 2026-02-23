@@ -33,7 +33,24 @@ def create_pdf(data_row):
     pdf = FPDF()
     pdf.add_page()
     pdf.add_font('ArabicFont', '', font_path, uni=True)
+# --- تصميم خلفية احترافية للنظام ---
+page_bg = """
+<style>
+/* تدرج لوني رسمي وهادئ يميل للرمادي الفاتح والأبيض */
+.stApp {
+    background: linear-gradient(180deg, #e9ecef 0%, #ffffff 100%);
+}
 
+/* تحسين شكل حقل إدخال الرقم ليكون أكثر بروزاً وأناقة */
+.stTextInput > div > div > input {
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 10px;
+}
+</style>
+"""
+st.markdown(page_bg, unsafe_allow_html=True)
     # العنوان
     pdf.set_font('ArabicFont', '', 16)
     title = fix_text("شعبة المالية / جامعة ابن سينا للعلوم الطبية والصيدلانية")
@@ -125,15 +142,8 @@ with st.sidebar:
         st.error("كلمة المرور غير صحيحة")
 
 # ==========================================
-
 # الواجهة الرئيسية (للموظفين)
 # ==========================================
-
-# نستخدم الأعمدة لوضع الشعار في المنتصف وبحجم مناسب
-col1, col2, col3 = st.columns([1, 1, 1])
-with col2:
-    # رابط الصورة المباشر من سيرفرات ويكيبيديا
-    st.image("https://ar.wikipedia.org/wiki/Special:FilePath/جامعة_ابن_سينا_للعلوم_الطبية_والصيدلانية.png", use_column_width=True)
 
 st.markdown("<h1 style='text-align: center;'>نظام الرواتب الإلكتروني</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center;'>جامعة ابن سينا للعلوم الطبية والصيدلانية</h3>", unsafe_allow_html=True)
@@ -173,6 +183,7 @@ if st.button("بحث واستخراج القسيمة"):
             st.error("جاري تحديث البيانات أو أن ملف البيانات غير موجود. الرجاء المحاولة بعد قليل.")
         except Exception as e:
             st.error(f"حدث خطأ: {e}")
+
 
 
 
