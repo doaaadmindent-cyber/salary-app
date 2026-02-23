@@ -1,33 +1,4 @@
 import streamlit as st
-# --- تصميم خلفية احترافية للنظام (الطريقة الأقوى) ---
-st.markdown("""
-<style>
-/* تغيير لون الخلفية الأساسية للموقع */
-[data-testid="stAppViewContainer"] {
-    background-color: #f4f6f9; /* لون رمادي مزرق فاتح جداً واحترافي */
-    background-image: linear-gradient(180deg, #e2e8f0 0%, #ffffff 100%);
-}
-
-/* جعل الشريط العلوي شفافاً لكي لا يقطع التدرج اللوني */
-[data-testid="stHeader"] {
-    background-color: transparent;
-}
-
-/* تحسين شكل حقل إدخال الرقم الوظيفي ليكون بارزاً وأنيقاً */
-input[type="text"] {
-    background-color: #ffffff !important;
-    border: 2px solid #cbd5e1 !important;
-    border-radius: 10px !important;
-    padding: 12px !important;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* تغيير لون الخط في العناوين ليكون أغمق وأكثر رسمية */
-h1, h3 {
-    color: #1e293b !important;
-}
-</style>
-""", unsafe_allow_html=True)
 import pandas as pd
 from fpdf import FPDF
 import arabic_reshaper
@@ -195,6 +166,7 @@ if st.button("بحث واستخراج القسيمة"):
             st.error("جاري تحديث البيانات أو أن ملف البيانات غير موجود. الرجاء المحاولة بعد قليل.")
         except Exception as e:
             st.error(f"حدث خطأ: {e}")
+
 
 
 
