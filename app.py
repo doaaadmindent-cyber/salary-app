@@ -8,32 +8,28 @@ from github import Github
 import base64
 # --- إعداد الصفحة ---
 st.set_page_config(page_title="نظام الرواتب", layout="centered")
-# --- دالة إضافة العلامة المائية (طبقة علوية شفافة) ---
+# --- دالة إضافة العلامة المائية (طريقة الخلفية المدمجة المضمونة) ---
 def add_watermark(image_path):
     try:
         with open(image_path, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read()).decode()
         
-        # استخدام HTML مباشر كطبقة فوقية شفافة
-        watermark_html = f"""
-        <div style="
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-image: url('data:image/png;base64,{encoded_string}');
-            background-size: 50%;
-            background-position: center;
+        # نستخدم linear-gradient لعمل طبقة بيضاء بنسبة 92% فوق الشعار، ليظهر الشعار كعلامة مائية باهتة
+        css_code = f"""
+        <style>
+        .stApp {{
+            background-image: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)), url("data:image/png;base64,{encoded_string}");
+            background-size: 400px; /* يمكنك تكبير أو تصغير هذا الرقم لتغيير حجم الشعار */
+            background-position: center center;
             background-repeat: no-repeat;
-            opacity: 0.08; /* شفافية باهتة جداً */
-            z-index: 9999; /* لضمان ظهوره فوق الخلفية البيضاء */
-            pointer-events: none; /* يسمح بالضغط على الأزرار من خلاله */
-        "></div>
+            background-attachment: fixed;
+        }}
+        </style>
         """
-        st.markdown(watermark_html, unsafe_allow_html=True)
+        st.markdown(css_code, unsafe_allow_html=True)
+        
     except FileNotFoundError:
-        st.error("⚠️ لم يتم العثور على صورة الشعار! تأكد من رفع ملف باسم logo.png")
+        st.error("⚠️ خطأ: ملف الصورة 'logo.png' غير موجود في GitHub. تأكد من رفع الملف بنفس هذا الاسم بالضبط (حروف صغيرة).")
 
 # تشغيل الدالة
 add_watermark("logo.png")
@@ -193,6 +189,7 @@ if st.button("بحث واستخراج القسيمة"):
             st.error("جاري تحديث البيانات أو أن ملف البيانات غير موجود. الرجاء المحاولة بعد قليل.")
         except Exception as e:
             st.error(f"حدث خطأ: {e}")
+
 
 
 
