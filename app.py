@@ -5,9 +5,42 @@ import arabic_reshaper
 from bidi.algorithm import get_display
 import os
 from github import Github
-
+import base64
 # --- إعداد الصفحة ---
 st.set_page_config(page_title="نظام الرواتب", layout="centered")
+# --- دالة إضافة العلامة المائية في الخلفية ---
+def add_watermark(image_path):
+    try:
+        with open(image_path, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode()
+        
+        st.markdown(
+            f"""
+            <style>
+            .stApp::before {{
+                content: "";
+                background-image: url("data:image/png;base64,{encoded_string}");
+                background-size: 50%; /* حجم الشعار في الشاشة */
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0.08; /* درجة الشفافية: 0.08 تعني شفاف جداً ومناسب للقراءة */
+                z-index: -1; /* لضمان بقاء الشعار خلف النصوص */
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+    except FileNotFoundError:
+        pass # إذا لم يجد ملف الشعار، يتجاهل الأمر ولا يظهر خطأ
+
+# تشغيل الدالة
+add_watermark("logo.png")
 # --- إخفاء قوائم Streamlit لحماية الكود ---
 hide_st_style = """
             <style>
@@ -164,5 +197,6 @@ if st.button("بحث واستخراج القسيمة"):
             st.error("جاري تحديث البيانات أو أن ملف البيانات غير موجود. الرجاء المحاولة بعد قليل.")
         except Exception as e:
             st.error(f"حدث خطأ: {e}")
+
 
 
