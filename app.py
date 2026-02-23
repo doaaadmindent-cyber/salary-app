@@ -8,31 +8,6 @@ from github import Github
 import base64
 # --- إعداد الصفحة ---
 st.set_page_config(page_title="نظام الرواتب", layout="centered")
-# --- دالة إضافة العلامة المائية (طريقة الخلفية المدمجة المضمونة) ---
-def add_watermark(image_path):
-    try:
-        with open(image_path, "rb") as image_file:
-            encoded_string = base64.b64encode(image_file.read()).decode()
-        
-        # نستخدم linear-gradient لعمل طبقة بيضاء بنسبة 92% فوق الشعار، ليظهر الشعار كعلامة مائية باهتة
-        css_code = f"""
-        <style>
-        .stApp {{
-            background-image: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)), url("data:image/png;base64,{encoded_string}");
-            background-size: 400px; /* يمكنك تكبير أو تصغير هذا الرقم لتغيير حجم الشعار */
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
-        </style>
-        """
-        st.markdown(css_code, unsafe_allow_html=True)
-        
-    except FileNotFoundError:
-        st.error("⚠️ خطأ: ملف الصورة 'logo.png' غير موجود في GitHub. تأكد من رفع الملف بنفس هذا الاسم بالضبط (حروف صغيرة).")
-
-# تشغيل الدالة
-add_watermark("logo.png")
 # --- إخفاء قوائم Streamlit لحماية الكود ---
 hide_st_style = """
             <style>
@@ -149,14 +124,25 @@ with st.sidebar:
     elif password:
         st.error("كلمة المرور غير صحيحة")
 
+# ==========================================
 # الواجهة الرئيسية (للموظفين)
+# ==========================================
+
+# إضافة الشعار في أعلى منتصف الصفحة
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    try:
+        # سيتم عرض الشعار هنا إذا كان الملف موجوداً
+        st.image("logo.png", use_column_width=True)
+    except FileNotFoundError:
+        pass # إذا لم يجد الشعار، سيكمل بدون إظهار خطأ
+
 st.markdown("<h1 style='text-align: center;'>نظام الرواتب الإلكتروني</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center;'>جامعة ابن سينا للعلوم الطبية والصيدلانية</h3>", unsafe_allow_html=True)
-
 st.write("---")
 emp_id = st.text_input("أدخل الرقم الوظيفي هنا:", max_chars=10)
 
-if st.button("بحث واستخراج القسيمة"):
+if st.button("بحث"):
     if not emp_id:
         st.warning("الرجاء إدخال الرقم الوظيفي")
     else:
@@ -189,6 +175,7 @@ if st.button("بحث واستخراج القسيمة"):
             st.error("جاري تحديث البيانات أو أن ملف البيانات غير موجود. الرجاء المحاولة بعد قليل.")
         except Exception as e:
             st.error(f"حدث خطأ: {e}")
+
 
 
 
