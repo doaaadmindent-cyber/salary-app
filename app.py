@@ -17,10 +17,10 @@ def add_watermark(image_path):
         st.markdown(
             f"""
             <style>
-            .stApp::before {{
+            [data-testid="stAppViewContainer"]::before {{
                 content: "";
                 background-image: url("data:image/png;base64,{encoded_string}");
-                background-size: 50%; /* حجم الشعار في الشاشة */
+                background-size: 50%; 
                 background-position: center;
                 background-repeat: no-repeat;
                 background-attachment: fixed;
@@ -29,15 +29,17 @@ def add_watermark(image_path):
                 left: 0;
                 width: 100%;
                 height: 100%;
-                opacity: 0.08; /* درجة الشفافية: 0.08 تعني شفاف جداً ومناسب للقراءة */
-                z-index: -1; /* لضمان بقاء الشعار خلف النصوص */
+                opacity: 0.1; /* درجة الشفافية */
+                z-index: 0;
+                pointer-events: none; /* مهم جداً: لكي لا يمنع الشعار الضغط على الأزرار */
             }}
             </style>
             """,
             unsafe_allow_html=True
         )
     except FileNotFoundError:
-        pass # إذا لم يجد ملف الشعار، يتجاهل الأمر ولا يظهر خطأ
+        # هذه الرسالة ستظهر لك فقط إذا كان هناك مشكلة في اسم الصورة
+        st.error("⚠️ لم يتم العثور على صورة الشعار! تأكد من أن اسم الملف المرفوع هو logo.png بالضبط.")
 
 # تشغيل الدالة
 add_watermark("logo.png")
@@ -197,6 +199,7 @@ if st.button("بحث واستخراج القسيمة"):
             st.error("جاري تحديث البيانات أو أن ملف البيانات غير موجود. الرجاء المحاولة بعد قليل.")
         except Exception as e:
             st.error(f"حدث خطأ: {e}")
+
 
 
 
