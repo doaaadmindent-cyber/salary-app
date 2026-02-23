@@ -1,4 +1,33 @@
 import streamlit as st
+# --- تصميم خلفية احترافية للنظام (الطريقة الأقوى) ---
+st.markdown("""
+<style>
+/* تغيير لون الخلفية الأساسية للموقع */
+[data-testid="stAppViewContainer"] {
+    background-color: #f4f6f9; /* لون رمادي مزرق فاتح جداً واحترافي */
+    background-image: linear-gradient(180deg, #e2e8f0 0%, #ffffff 100%);
+}
+
+/* جعل الشريط العلوي شفافاً لكي لا يقطع التدرج اللوني */
+[data-testid="stHeader"] {
+    background-color: transparent;
+}
+
+/* تحسين شكل حقل إدخال الرقم الوظيفي ليكون بارزاً وأنيقاً */
+input[type="text"] {
+    background-color: #ffffff !important;
+    border: 2px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* تغيير لون الخط في العناوين ليكون أغمق وأكثر رسمية */
+h1, h3 {
+    color: #1e293b !important;
+}
+</style>
+""", unsafe_allow_html=True)
 import pandas as pd
 from fpdf import FPDF
 import arabic_reshaper
@@ -33,24 +62,7 @@ def create_pdf(data_row):
     pdf = FPDF()
     pdf.add_page()
     pdf.add_font('ArabicFont', '', font_path, uni=True)
-# --- تصميم خلفية احترافية للنظام ---
-page_bg = """
-<style>
-/* تدرج لوني رسمي وهادئ يميل للرمادي الفاتح والأبيض */
-.stApp {
-    background: linear-gradient(180deg, #e9ecef 0%, #ffffff 100%);
-}
 
-/* تحسين شكل حقل إدخال الرقم ليكون أكثر بروزاً وأناقة */
-.stTextInput > div > div > input {
-    background-color: #ffffff;
-    border: 1px solid #ced4da;
-    border-radius: 8px;
-    padding: 10px;
-}
-</style>
-"""
-st.markdown(page_bg, unsafe_allow_html=True)
     # العنوان
     pdf.set_font('ArabicFont', '', 16)
     title = fix_text("شعبة المالية / جامعة ابن سينا للعلوم الطبية والصيدلانية")
@@ -183,6 +195,7 @@ if st.button("بحث واستخراج القسيمة"):
             st.error("جاري تحديث البيانات أو أن ملف البيانات غير موجود. الرجاء المحاولة بعد قليل.")
         except Exception as e:
             st.error(f"حدث خطأ: {e}")
+
 
 
 
