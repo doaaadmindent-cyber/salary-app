@@ -142,7 +142,7 @@ st.markdown("<h3 style='text-align: center;'>جامعة ابن سينا للعل
 st.write("---")
 emp_id = st.text_input("أدخل الرقم الوظيفي هنا:", max_chars=10)
 
-if st.button("بحث"):
+if st.button("بحث واستخراج القسيمة"):
     if not emp_id:
         st.warning("الرجاء إدخال الرقم الوظيفي")
     else:
@@ -175,6 +175,7 @@ if st.button("بحث"):
             st.error("جاري تحديث البيانات أو أن ملف البيانات غير موجود. الرجاء المحاولة بعد قليل.")
         except Exception as e:
             st.error(f"حدث خطأ: {e}")
+
 
 
 
