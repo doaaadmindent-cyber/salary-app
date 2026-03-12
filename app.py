@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import streamlit.components.v1 as components
 
 # ==========================================
 # 1. إعدادات الصفحة الأساسية
@@ -7,7 +8,7 @@ import pandas as pd
 st.set_page_config(page_title="بوابة الرواتب | جامعة ابن سينا", page_icon="🏛️", layout="wide")
 
 # ==========================================
-# 2. التصميم الاحترافي (CSS المتقدم والتدرجات)
+# 2. التصميم الاحترافي (CSS) وإعدادات ملف الـ PDF
 # ==========================================
 st.markdown("""
 <style>
@@ -32,37 +33,12 @@ st.markdown("""
         color: #f8fafc !important;
     }
 
-    /* تصميم زر البحث المتقدم */
-    div.stButton > button:first-child {
-        background: linear-gradient(90deg, #0284c7 0%, #0369a1 100%);
-        color: white;
-        border-radius: 10px;
-        border: none;
-        padding: 12px;
-        font-size: 18px;
-        font-weight: bold;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
-        width: 100%;
-        margin-top: 15px;
-    }
-    div.stButton > button:first-child:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4);
-        background: linear-gradient(90deg, #0369a1 0%, #075985 100%);
-    }
-
-    /* حقل إدخال الرقم الوظيفي */
+    /* حقل إدخال الرقم الوظيفي داخل الفورم */
     div[data-baseweb="input"] {
         border-radius: 10px;
         border: 2px solid #cbd5e1;
         box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         background-color: rgba(255, 255, 255, 0.9);
-        transition: all 0.3s ease;
-    }
-    div[data-baseweb="input"]:focus-within {
-        border-color: #0284c7;
-        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
     }
     div[data-baseweb="input"] input {
         direction: rtl;
@@ -73,7 +49,7 @@ st.markdown("""
         text-align: center;
     }
 
-    /* بطاقات المعلومات (Glassmorphism) */
+    /* بطاقات المعلومات */
     .info-card {
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
@@ -83,31 +59,22 @@ st.markdown("""
         border: 1px solid rgba(255,255,255,0.2);
         text-align: center;
         margin-bottom: 25px;
-        transition: transform 0.3s ease;
     }
-    .info-card:hover {
-        transform: translateY(-5px);
-    }
-    .card-icon {
-        font-size: 35px;
-        margin-bottom: 10px;
-    }
-    .card-label {
-        color: #64748b;
-        font-size: 15px;
-        margin-bottom: 8px;
-        font-weight: 600;
-    }
-    .card-value {
-        color: #1e293b;
-        font-size: 22px;
-        font-weight: 800;
-    }
-    .salary-value {
-        color: #059669;
-        font-size: 36px;
-        font-weight: 900;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+    .card-icon { font-size: 35px; margin-bottom: 10px; }
+    .card-label { color: #64748b; font-size: 15px; margin-bottom: 8px; font-weight: 600; }
+    .card-value { color: #1e293b; font-size: 22px; font-weight: 800; }
+    .salary-value { color: #059669; font-size: 36px; font-weight: 900; }
+
+    /* ==========================================
+       إعدادات ملف الـ PDF (إخفاء الأزرار عند الطباعة)
+       ========================================== */
+    @media print {
+        [data-testid="stSidebar"] { display: none !important; }
+        header { display: none !important; }
+        [data-testid="stForm"] { display: none !important; }
+        iframe { display: none !important; }
+        .stApp { background: white !important; }
+        .info-card { box-shadow: none !important; border: 2px solid #e2e8f0 !important; }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -135,31 +102,33 @@ with st.sidebar:
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==========================================
-# 4. ترويسة النظام (Header)
+# 4. ترويسة النظام
 # ==========================================
 st.markdown("""
-<div style='background: linear-gradient(90deg, #ffffff 0%, #f8fafc 100%); padding: 40px 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); text-align: center; margin-bottom: 40px; border: 1px solid #e2e8f0;'>
+<div style='background: white; padding: 40px 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); text-align: center; margin-bottom: 40px; border: 1px solid #e2e8f0;'>
     <div style='font-size: 50px; margin-bottom: 10px;'>🏛️</div>
-    <h1 style='color: #0f172a; margin-bottom: 10px; font-size: 38px; font-weight: 800; letter-spacing: -0.5px;'>بوابة الرواتب الإلكترونية</h1>
+    <h1 style='color: #0f172a; margin-bottom: 10px; font-size: 38px; font-weight: 800;'>بوابة الرواتب الإلكترونية</h1>
     <h3 style='color: #475569; margin-top: 0; font-weight: 500; font-size: 20px;'>جامعة ابن سينا للعلوم الطبية والصيدلانية</h3>
 </div>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 5. منطقة البحث (الرقم الوظيفي)
+# 5. منطقة البحث (استخدام Form لحل مشكلة عدم الاستجابة)
 # ==========================================
 col_space1, col_search, col_space2 = st.columns([1, 2, 1])
 
 with col_search:
-    # تم نقل النص ليصبح داخل العمود وفوق مربع البحث مباشرة
     st.markdown("<div style='direction: rtl; text-align: center; margin-bottom: 15px;'>", unsafe_allow_html=True)
     st.markdown("<h4 style='color: #334155; font-weight: bold;'>يرجى إدخال الرقم الوظيفي الخاص بك للاستعلام:</h4>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
     
-    st.markdown("<div style='direction: rtl;'>", unsafe_allow_html=True)
-    emp_id = st.text_input("🔑", placeholder="أدخل الرقم الوظيفي هنا...", label_visibility="collapsed")
-    search_button = st.button("🔐 كشف الراتب")
-    st.markdown("</div>", unsafe_allow_html=True)
+    # ربط الإدخال والزر في Form واحد
+    with st.form(key='search_form'):
+        st.markdown("<div style='direction: rtl;'>", unsafe_allow_html=True)
+        emp_id = st.text_input("🔑", placeholder="أدخل الرقم الوظيفي هنا...", label_visibility="collapsed")
+        # زر مدمج داخل الفورم بتصميم أنيق
+        search_button = st.form_submit_button("🔐 عرض كشف الراتب", use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
 st.write("---")
 
@@ -170,18 +139,14 @@ if search_button:
     if emp_id:
         try:
             df = pd.read_excel("salaries.xlsx")
-            
-            # تحويل عمود الرقم الوظيفي والمدخل إلى نصوص لضمان دقة المطابقة
             df['الرقم الوظيفي'] = df['الرقم الوظيفي'].astype(str).str.strip()
             search_query = str(emp_id).strip()
             
-            # البحث بالتطابق التام للرقم الوظيفي
             user_data = df[df['الرقم الوظيفي'] == search_query]
             
             if not user_data.empty:
                 row = user_data.iloc[0]
                 
-                # --- البطاقات التفاعلية العلوية ---
                 st.markdown("<div style='direction: rtl;'>", unsafe_allow_html=True)
                 c1, c2, c3 = st.columns(3)
                 
@@ -213,7 +178,6 @@ if search_button:
                     """, unsafe_allow_html=True)
                 st.markdown("</div>", unsafe_allow_html=True)
                 
-                # --- الجدول التفصيلي (تصميم بنكي نقي) ---
                 st.markdown("<h4 style='text-align: right; color: #1e293b; direction: rtl; margin-top: 30px; font-weight: bold;'>📊 الكشف التفصيلي للمفردات:</h4>", unsafe_allow_html=True)
                 
                 html_table = f"""
@@ -245,25 +209,33 @@ if search_button:
                 </div>
                 """
                 st.markdown(html_table, unsafe_allow_html=True)
+
+                # ==========================================
+                # زر تحميل ملف الـ PDF عبر الجافاسكربت
+                # ==========================================
+                st.write("")
+                st.write("")
+                components.html(
+                    """
+                    <div style="text-align: center;">
+                        <button onclick="window.parent.print()" style="background: linear-gradient(90deg, #10b981 0%, #059669 100%); color: white; border-radius: 10px; border: none; padding: 15px 30px; font-size: 18px; font-weight: bold; cursor: pointer; font-family: Tahoma, Arial; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
+                            📥 حفظ بصيغة PDF
+                        </button>
+                    </div>
+                    """,
+                    height=80
+                )
                 
             else:
                 st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
                 st.error("❌ لم يتم العثور على بيانات مطابقة. يرجى التأكد من كتابة الرقم الوظيفي بشكل صحيح.")
                 st.markdown("</div>", unsafe_allow_html=True)
                 
-        except KeyError:
-            st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
-            st.error("⚠️ خطأ في هيكل ملف الإكسل: يرجى التأكد من وجود عمود باسم 'الرقم الوظيفي' تماماً.")
-            st.markdown("</div>", unsafe_allow_html=True)
-        except FileNotFoundError:
-            st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
-            st.warning("⚠️ النظام قيد التحديث. لم يتم رفع كشوفات الرواتب بعد.")
-            st.markdown("</div>", unsafe_allow_html=True)
         except Exception as e:
             st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
-            st.error("⚠️ حدث خطأ فني أثناء قراءة البيانات. يرجى مراجعة الإدارة.")
+            st.error("⚠️ حدث خطأ فني أثناء قراءة البيانات. تأكد من رفع كشف الإكسل بشكل صحيح.")
             st.markdown("</div>", unsafe_allow_html=True)
     else:
         st.markdown("<div style='direction: rtl; text-align: center;'>", unsafe_allow_html=True)
-        st.info("👆 يرجى إدخال الرقم الوظيفي في الحقل أعلاه والضغط على زر الكشف.")
+        st.warning("👆 يرجى إدخال الرقم الوظيفي أولاً.")
         st.markdown("</div>", unsafe_allow_html=True)
