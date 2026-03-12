@@ -7,136 +7,158 @@ import pandas as pd
 st.set_page_config(page_title="بوابة الرواتب | جامعة ابن سينا", page_icon="🏛️", layout="wide")
 
 # ==========================================
-# 2. التصميم الاحترافي (CSS المتقدم)
+# 2. التصميم الاحترافي (CSS المتقدم والتدرجات)
 # ==========================================
 st.markdown("""
 <style>
-    /* إخفاء العلامات الافتراضية لمنصة Streamlit */
+    /* إخفاء عناصر Streamlit الافتراضية */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
 
-    /* خلفية النظام العامة */
+    /* الخلفية العامة للنظام */
     .stApp {
-        background-color: #f4f6f9;
+        background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* تصميم الشريط الجانبي للإدارة */
+    /* الشريط الجانبي للإدارة */
     [data-testid="stSidebar"] {
-        background-color: #1e293b;
-        border-right: 2px solid #0f172a;
+        background-color: #0f172a;
+        background-image: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        border-right: 1px solid #334155;
     }
     [data-testid="stSidebar"] h2, [data-testid="stSidebar"] p {
         color: #f8fafc !important;
     }
 
-    /* تصميم زر البحث */
+    /* تصميم زر البحث المتقدم */
     div.stButton > button:first-child {
-        background-color: #0369a1;
+        background: linear-gradient(90deg, #0284c7 0%, #0369a1 100%);
         color: white;
-        border-radius: 8px;
+        border-radius: 10px;
         border: none;
-        padding: 10px;
-        font-size: 16px;
+        padding: 12px;
+        font-size: 18px;
         font-weight: bold;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
         width: 100%;
+        margin-top: 15px;
     }
     div.stButton > button:first-child:hover {
-        background-color: #0284c7;
         transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4);
+        background: linear-gradient(90deg, #0369a1 0%, #075985 100%);
     }
 
-    /* تصميم حقل إدخال الاسم */
+    /* حقل إدخال الرقم الوظيفي */
     div[data-baseweb="input"] {
-        border-radius: 8px;
-        border: 1px solid #cbd5e1;
-        box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-        background-color: white;
+        border-radius: 10px;
+        border: 2px solid #cbd5e1;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        background-color: rgba(255, 255, 255, 0.9);
+        transition: all 0.3s ease;
+    }
+    div[data-baseweb="input"]:focus-within {
+        border-color: #0284c7;
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
     }
     div[data-baseweb="input"] input {
         direction: rtl;
-        font-size: 16px;
-        padding: 12px;
+        font-size: 18px;
+        padding: 15px;
+        font-weight: bold;
+        color: #0f172a;
+        text-align: center;
     }
 
-    /* تصميم بطاقات الملخص العلوية */
-    .dashboard-card {
-        background-color: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        border-top: 4px solid #0369a1;
+    /* بطاقات المعلومات (Glassmorphism) */
+    .info-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        border: 1px solid rgba(255,255,255,0.2);
         text-align: center;
         margin-bottom: 25px;
+        transition: transform 0.3s ease;
     }
-    .dashboard-title {
-        color: #64748b;
-        font-size: 14px;
+    .info-card:hover {
+        transform: translateY(-5px);
+    }
+    .card-icon {
+        font-size: 35px;
         margin-bottom: 10px;
-        font-weight: bold;
     }
-    .dashboard-value {
-        color: #0f172a;
-        font-size: 20px;
-        font-weight: bold;
+    .card-label {
+        color: #64748b;
+        font-size: 15px;
+        margin-bottom: 8px;
+        font-weight: 600;
     }
-    .net-salary-value {
-        color: #16a34a;
-        font-size: 32px;
-        font-weight: bold;
+    .card-value {
+        color: #1e293b;
+        font-size: 22px;
+        font-weight: 800;
+    }
+    .salary-value {
+        color: #059669;
+        font-size: 36px;
+        font-weight: 900;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 3. شريط الإدارة الجانبي (Sidebar)
+# 3. شريط الإدارة الجانبي
 # ==========================================
 with st.sidebar:
-    st.markdown("<h2 style='text-align: center; direction: rtl;'>🔒 بوابة الإدارة</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; direction: rtl;'>⚙️ لوحة التحكم</h2>", unsafe_allow_html=True)
     st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
     
-    password = st.text_input("كلمة مرور المدير:", type="password")
+    password = st.text_input("رمز مرور الإدارة:", type="password")
     
     if password == "1234":
-        st.success("✅ دخول ناجح")
-        uploaded_file = st.file_uploader("📥 رفع كشف الإكسل:", type=["xlsx", "xls"])
+        st.success("✅ تم توثيق الدخول")
+        uploaded_file = st.file_uploader("📂 تحديث قاعدة بيانات الرواتب (Excel):", type=["xlsx", "xls"])
         
         if uploaded_file is not None:
             with open("salaries.xlsx", "wb") as f:
                 f.write(uploaded_file.getbuffer())
-            st.success("✅ تم تحديث الكشوفات!")
+            st.success("✨ تم تحديث الرواتب بنجاح!")
     elif password != "":
         st.error("❌ الرمز غير صحيح")
         
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ==========================================
-# 4. الواجهة الرئيسية (الهيدر الاحترافي)
+# 4. ترويسة النظام (Header)
 # ==========================================
 st.markdown("""
-<div style='background-color: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; margin-bottom: 30px;'>
-    <h1 style='color: #0f172a; margin-bottom: 5px; font-size: 36px;'>نظام الاستعلام عن الرواتب</h1>
-    <h3 style='color: #64748b; margin-top: 0; font-weight: normal;'>جامعة ابن سينا للعلوم الطبية والصيدلانية</h3>
+<div style='background: linear-gradient(90deg, #ffffff 0%, #f8fafc 100%); padding: 40px 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); text-align: center; margin-bottom: 40px; border: 1px solid #e2e8f0;'>
+    <div style='font-size: 50px; margin-bottom: 10px;'>🏛️</div>
+    <h1 style='color: #0f172a; margin-bottom: 10px; font-size: 38px; font-weight: 800; letter-spacing: -0.5px;'>بوابة الرواتب الإلكترونية</h1>
+    <h3 style='color: #475569; margin-top: 0; font-weight: 500; font-size: 20px;'>جامعة ابن سينا للعلوم الطبية والصيدلانية</h3>
 </div>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 5. منطقة البحث (موسطة وأنيقة)
+# 5. منطقة البحث (الرقم الوظيفي)
 # ==========================================
-st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
+st.markdown("<div style='direction: rtl; text-align: center; margin-bottom: 10px;'>", unsafe_allow_html=True)
+st.markdown("<h4 style='color: #334155;'>يرجى إدخال الرقم الوظيفي الخاص بك للاستعلام</h4>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-# وضعنا حقل البحث والزر في منتصف الشاشة باستخدام الأعمدة
 col_space1, col_search, col_space2 = st.columns([1, 2, 1])
 
 with col_search:
-    emp_name = st.text_input("👤 أدخل اسمك الرباعي أو اللقب:", placeholder="اكتب اسمك هنا...")
-    search_button = st.button("🔍 استعلام عن الراتب")
-
-st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("<div style='direction: rtl;'>", unsafe_allow_html=True)
+    emp_id = st.text_input("🔑", placeholder="أدخل الرقم الوظيفي هنا...", label_visibility="collapsed")
+    search_button = st.button("🔐 كشف الراتب")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 st.write("---")
 
@@ -144,70 +166,78 @@ st.write("---")
 # 6. معالجة البيانات وعرض النتائج
 # ==========================================
 if search_button:
-    if emp_name:
+    if emp_id:
         try:
             df = pd.read_excel("salaries.xlsx")
-            df['الاسم'] = df['الاسم'].astype(str).str.strip()
-            user_data = df[df['الاسم'].str.contains(emp_name.strip(), na=False)]
+            
+            # تحويل عمود الرقم الوظيفي والمدخل إلى نصوص لضمان دقة المطابقة
+            df['الرقم الوظيفي'] = df['الرقم الوظيفي'].astype(str).str.strip()
+            search_query = str(emp_id).strip()
+            
+            # البحث بالتطابق التام للرقم الوظيفي
+            user_data = df[df['الرقم الوظيفي'] == search_query]
             
             if not user_data.empty:
                 row = user_data.iloc[0]
                 
-                # --- لوحة البيانات العلوية (Dashboard Cards) ---
+                # --- البطاقات التفاعلية العلوية ---
                 st.markdown("<div style='direction: rtl;'>", unsafe_allow_html=True)
                 c1, c2, c3 = st.columns(3)
                 
                 with c1:
                     st.markdown(f"""
-                    <div class="dashboard-card" style="border-top-color: #16a34a;">
-                        <div class="dashboard-title">الراتب الصافي (المستلم)</div>
-                        <div class="net-salary-value">{row.get('الراتب الصافي بعد الاستقطاعات', '-')} <span style="font-size: 16px; color: #64748b;">د.ع</span></div>
+                    <div class="info-card" style="border-bottom: 4px solid #10b981;">
+                        <div class="card-icon">💰</div>
+                        <div class="card-label">الصافي للاستلام</div>
+                        <div class="salary-value">{row.get('الراتب الصافي بعد الاستقطاعات', '-')} <span style="font-size: 18px; color: #64748b;">د.ع</span></div>
                     </div>
                     """, unsafe_allow_html=True)
                 
                 with c2:
                     st.markdown(f"""
-                    <div class="dashboard-card">
-                        <div class="dashboard-title">المنصب / اللقب العلمي</div>
-                        <div class="dashboard-value">{row.get('المنصب', '-')} / {row.get('اللقب العلمي', '-')}</div>
+                    <div class="info-card" style="border-bottom: 4px solid #3b82f6;">
+                        <div class="card-icon">💼</div>
+                        <div class="card-label">المنصب / اللقب</div>
+                        <div class="card-value">{row.get('المنصب', '-')} <br> <span style="font-size: 16px; color: #64748b;">{row.get('اللقب العلمي', '-')}</span></div>
                     </div>
                     """, unsafe_allow_html=True)
                     
                 with c3:
                     st.markdown(f"""
-                    <div class="dashboard-card">
-                        <div class="dashboard-title">اسم الموظف</div>
-                        <div class="dashboard-value">{row.get('الاسم', '-')}</div>
+                    <div class="info-card" style="border-bottom: 4px solid #6366f1;">
+                        <div class="card-icon">👤</div>
+                        <div class="card-label">معلومات الموظف</div>
+                        <div class="card-value">{row.get('الاسم', '-')} <br> <span style="font-size: 14px; color: #64748b; background: #e2e8f0; padding: 2px 8px; border-radius: 10px;">ID: {row.get('الرقم الوظيفي', '-')}</span></div>
                     </div>
                     """, unsafe_allow_html=True)
                 st.markdown("</div>", unsafe_allow_html=True)
                 
-                # --- الجدول التفصيلي الأفقي ---
-                st.markdown("<h4 style='text-align: right; color: #334155; direction: rtl; margin-top: 20px;'>تفاصيل الاستحقاقات والاستقطاعات:</h4>", unsafe_allow_html=True)
+                # --- الجدول التفصيلي (تصميم بنكي نقي) ---
+                st.markdown("<h4 style='text-align: right; color: #1e293b; direction: rtl; margin-top: 30px; font-weight: bold;'>📊 الكشف التفصيلي للمفردات:</h4>", unsafe_allow_html=True)
                 
                 html_table = f"""
-                <div style="overflow-x: auto; direction: rtl; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-radius: 8px;">
-                  <table style="width: 100%; min-width: 1000px; border-collapse: collapse; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: white;">
+                <div style="overflow-x: auto; direction: rtl; background: white; border-radius: 12px; padding: 1px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;">
+                  <table style="width: 100%; min-width: 1000px; border-collapse: collapse; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
                     <thead>
-                      <tr style="background-color: #f1f5f9; color: #334155; font-size: 15px;">
-                        <th style="border: 1px solid #e2e8f0; padding: 15px; background-color: #e0f2fe;">الراتب الاسمي</th>
-                        <th style="border: 1px solid #e2e8f0; padding: 15px; background-color: #e0f2fe;">الخدمة الجامعية</th>
-                        <th style="border: 1px solid #e2e8f0; padding: 15px; background-color: #e0f2fe;">النقل</th>
-                        <th style="border: 1px solid #e2e8f0; padding: 15px; background-color: #e0f2fe;">الزوجية</th>
-                        <th style="border: 1px solid #e2e8f0; padding: 15px; background-color: #bae6fd;">الراتب الكامل</th>
-                        <th style="border: 1px solid #e2e8f0; padding: 15px; background-color: #fee2e2;">التقاعد</th>
-                        <th style="border: 1px solid #e2e8f0; padding: 15px; background-color: #fee2e2;">الضريبة</th>
+                      <tr style="background-color: #f8fafc; color: #475569; font-size: 15px; border-bottom: 2px solid #e2e8f0;">
+                        <th style="padding: 18px 15px; font-weight: 600;">الراتب الاسمي</th>
+                        <th style="padding: 18px 15px; font-weight: 600;">الخدمة الجامعية</th>
+                        <th style="padding: 18px 15px; font-weight: 600;">النقل</th>
+                        <th style="padding: 18px 15px; font-weight: 600;">الزوجية</th>
+                        <th style="padding: 18px 15px; font-weight: 700; color: #0369a1; background: #f0f9ff;">الراتب الكامل</th>
+                        <th style="padding: 18px 15px; font-weight: 600; color: #b91c1c;">التقاعد</th>
+                        <th style="padding: 18px 15px; font-weight: 600; color: #b91c1c;">الضريبة</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr style="color: #0f172a; font-size: 16px; font-weight: 500;">
-                        <td style="border: 1px solid #e2e8f0; padding: 15px;">{row.get('الراتب الاسمي', '-')}</td>
-                        <td style="border: 1px solid #e2e8f0; padding: 15px;">{row.get('الخدمة الجامعية', '-')}</td>
-                        <td style="border: 1px solid #e2e8f0; padding: 15px;">{row.get('النقل', '-')}</td>
-                        <td style="border: 1px solid #e2e8f0; padding: 15px;">{row.get('الزوجية', '-')}</td>
-                        <td style="border: 1px solid #e2e8f0; padding: 15px; font-weight: bold; background-color: #f0f9ff;">{row.get('الراتب الكامل', '-')}</td>
-                        <td style="border: 1px solid #e2e8f0; padding: 15px; color: #dc2626;">{row.get('التقاعد', '-')}</td>
-                        <td style="border: 1px solid #e2e8f0; padding: 15px; color: #dc2626;">{row.get('الضريبة', '-')}</td>
+                      <tr style="color: #0f172a; font-size: 17px; font-weight: 600;">
+                        <td style="padding: 20px 15px; border-bottom: 1px solid #f1f5f9;">{row.get('الراتب الاسمي', '-')}</td>
+                        <td style="padding: 20px 15px; border-bottom: 1px solid #f1f5f9;">{row.get('الخدمة الجامعية', '-')}</td>
+                        <td style="padding: 20px 15px; border-bottom: 1px solid #f1f5f9;">{row.get('النقل', '-')}</td>
+                        <td style="padding: 20px 15px; border-bottom: 1px solid #f1f5f9;">{row.get('الزوجية', '-')}</td>
+                        <td style="padding: 20px 15px; border-bottom: 1px solid #f1f5f9; background: #f0f9ff; color: #0369a1;">{row.get('الراتب الكامل', '-')}</td>
+                        <td style="padding: 20px 15px; border-bottom: 1px solid #f1f5f9; color: #ef4444;">{row.get('التقاعد', '-')}</td>
+                        <td style="padding: 20px 15px; border-bottom: 1px solid #f1f5f9; color: #ef4444;">{row.get('الضريبة', '-')}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -217,12 +247,16 @@ if search_button:
                 
             else:
                 st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
-                st.error("❌ عذراً، لم يتم العثور على بيانات بهذا الاسم. يرجى التأكد من الإملاء.")
+                st.error("❌ لم يتم العثور على بيانات مطابقة. يرجى التأكد من كتابة الرقم الوظيفي بشكل صحيح.")
                 st.markdown("</div>", unsafe_allow_html=True)
                 
+        except KeyError:
+            st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
+            st.error("⚠️ خطأ في هيكل ملف الإكسل: يرجى التأكد من وجود عمود باسم 'الرقم الوظيفي' تماماً.")
+            st.markdown("</div>", unsafe_allow_html=True)
         except FileNotFoundError:
             st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
-            st.warning("⚠️ النظام قيد التحديث. لم يتم رفع كشوفات الرواتب لهذا الشهر بعد.")
+            st.warning("⚠️ النظام قيد التحديث. لم يتم رفع كشوفات الرواتب بعد.")
             st.markdown("</div>", unsafe_allow_html=True)
         except Exception as e:
             st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
@@ -230,5 +264,5 @@ if search_button:
             st.markdown("</div>", unsafe_allow_html=True)
     else:
         st.markdown("<div style='direction: rtl; text-align: center;'>", unsafe_allow_html=True)
-        st.info("👆 يرجى إدخال اسمك في الحقل أعلاه والضغط على زر الاستعلام.")
+        st.info("👆 يرجى إدخال الرقم الوظيفي في الحقل أعلاه والضغط على زر الكشف.")
         st.markdown("</div>", unsafe_allow_html=True)
