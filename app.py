@@ -148,13 +148,14 @@ st.markdown("""
 # ==========================================
 # 5. منطقة البحث (الرقم الوظيفي)
 # ==========================================
-st.markdown("<div style='direction: rtl; text-align: center; margin-bottom: 10px;'>", unsafe_allow_html=True)
-st.markdown("<h4 style='color: #334155;'>يرجى إدخال الرقم الوظيفي الخاص بك للاستعلام</h4>", unsafe_allow_html=True)
-st.markdown("</div>", unsafe_allow_html=True)
-
 col_space1, col_search, col_space2 = st.columns([1, 2, 1])
 
 with col_search:
+    # تم نقل النص ليصبح داخل العمود وفوق مربع البحث مباشرة
+    st.markdown("<div style='direction: rtl; text-align: center; margin-bottom: 15px;'>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color: #334155; font-weight: bold;'>يرجى إدخال الرقم الوظيفي الخاص بك للاستعلام:</h4>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+    
     st.markdown("<div style='direction: rtl;'>", unsafe_allow_html=True)
     emp_id = st.text_input("🔑", placeholder="أدخل الرقم الوظيفي هنا...", label_visibility="collapsed")
     search_button = st.button("🔐 كشف الراتب")
