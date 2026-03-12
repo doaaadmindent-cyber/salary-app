@@ -12,35 +12,40 @@ st.set_page_config(page_title="نظام الرواتب", page_icon="💰", layou
 st.markdown("<style>footer {visibility: hidden;}</style>", unsafe_allow_html=True)
 
 # ==========================================
-# 3. العناوين الرئيسية
+# 3. شريط الإدارة الجانبي (Sidebar)
+# ==========================================
+with st.sidebar:
+    st.markdown("<h2 style='text-align: center; direction: rtl;'>🔒 لوحة الإدارة</h2>", unsafe_allow_html=True)
+    st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
+    
+    password = st.text_input("أدخل كلمة المرور:", type="password")
+    
+    if password == "1234":
+        st.success("✅ تم تسجيل الدخول بنجاح")
+        uploaded_file = st.file_uploader("📥 ارفع ملف الإكسل:", type=["xlsx", "xls"])
+        
+        if uploaded_file is not None:
+            with open("salaries.xlsx", "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            st.success("✅ تم تحديث بيانات الرواتب!")
+    elif password != "":
+        st.error("❌ كلمة المرور غير صحيحة")
+        
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# ==========================================
+# 4. الواجهة الرئيسية (العناوين)
 # ==========================================
 st.markdown("<h1 style='text-align: center;'>نظام الرواتب الإلكتروني</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center; color: #475569;'>جامعة ابن سينا للعلوم الطبية والصيدلانية</h3>", unsafe_allow_html=True)
 st.write("---")
 
 # ==========================================
-# 4. لوحة الإدارة (صندوق منسدل)
-# ==========================================
-with st.expander("🔒 لوحة الإدارة (اضغط هنا لرفع ملف الإكسل)"):
-    password = st.text_input("أدخل كلمة المرور الخاصة بالمدير:", type="password")
-    
-    if password == "1234":
-        st.success("✅ تم تسجيل الدخول بنجاح")
-        uploaded_file = st.file_uploader("📥 ارفع ملف الإكسل للرواتب:", type=["xlsx", "xls"])
-        
-        if uploaded_file is not None:
-            with open("salaries.xlsx", "wb") as f:
-                f.write(uploaded_file.getbuffer())
-            st.success("✅ تم تحديث بيانات الرواتب بنجاح!")
-    elif password != "":
-        st.error("❌ كلمة المرور غير صحيحة")
-
-st.write("---")
-
-# ==========================================
 # 5. واجهة الموظفين (البحث وعرض الجدول الأفقي)
 # ==========================================
+st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
 emp_name = st.text_input("📝 يرجى إدخال اسمك الرباعي أو اللقب للبحث:")
+st.markdown("</div>", unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns([1, 1, 1])
 with col2:
@@ -57,7 +62,7 @@ if search_button:
                 row = user_data.iloc[0]
                 
                 # ==========================================
-                # كود HTML لجدول أفقي إجباري (لا ينكسر أبداً)
+                # كود HTML لجدول أفقي إجباري
                 # ==========================================
                 html_table = f"""
                 <div style="overflow-x: auto; direction: rtl; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 8px;">
@@ -98,11 +103,19 @@ if search_button:
                 st.markdown(html_table, unsafe_allow_html=True)
                 
             else:
+                st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
                 st.error("❌ عذراً، لم يتم العثور على اسم مطابق.")
+                st.markdown("</div>", unsafe_allow_html=True)
                 
         except FileNotFoundError:
+            st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
             st.error("⚠️ لم يتم رفع ملف الرواتب من قبل الإدارة بعد.")
+            st.markdown("</div>", unsafe_allow_html=True)
         except Exception as e:
+            st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
             st.error(f"⚠️ يوجد خطأ في قراءة بيانات الإكسل. (التفاصيل: {e})")
+            st.markdown("</div>", unsafe_allow_html=True)
     else:
+        st.markdown("<div style='direction: rtl; text-align: right;'>", unsafe_allow_html=True)
         st.warning("⚠️ الرجاء إدخال الاسم أولاً.")
+        st.markdown("</div>", unsafe_allow_html=True)
